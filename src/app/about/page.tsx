@@ -2,8 +2,8 @@
 import PrivateRoute from "@/route/PrivateRoute";
 import React from "react";
 
-const Home = () => {
-  return <div>fnsoafndso</div>;
+const About = () => {
+  return <div>About</div>;
 };
 
-export default PrivateRoute(Home);
+export default PrivateRoute(About);
