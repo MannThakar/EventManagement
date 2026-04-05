@@ -69,15 +69,12 @@ const Input = ({
                 onFocus={onFocus}
                 onClick={onClick}
                 onKeyDown={onKeyDown}
-                className={clsx(`
-                  w-full px-4 py-3 font-semibold
-                  bg-transparent
-                  border-0
-                  outline-none
-                  focus:outline-none
-                  disabled:bg-gray-200
-                  rounded-lg
-                `)}
+                className={clsx(
+                  "w-full px-4 py-3 font-semibold bg-transparent border-0 outline-none focus:outline-none rounded-lg",
+                  {
+                    "cursor-not-allowed": disabled,
+                  },
+                )}
               />
             )}
           />

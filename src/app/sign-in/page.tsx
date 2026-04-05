@@ -1,26 +1,39 @@
 "use client";
-import React from "react";
-import Input from "@/components/Input";
-import Button from "@/components/Button";
+import React, { useState } from "react";
+import Button from "@/components/common/Button";
 import Link from "next/link";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
-import { signInUser } from "@/utils/helper";
+import { errorToast, signInUser, successToast } from "@/utils/helper";
 import { useRouter } from "next/navigation";
+import {
+  AUTH_MESSAGE,
+  FIELD_MESSAGE,
+  MIN_PASSWORD_CHAR,
+} from "@/utils/message";
+import { iSignIn } from "@/interface/auth";
+import { REGEX_PATTERN } from "@/utils/constant";
+import Input from "@/components/common/Input";
 const SignIn = () => {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm();
-  const router = useRouter();
+  } = useForm<iSignIn>();
 
   const onSubmit = async (data: { email: string; password: string }) => {
     try {
+      setLoading(true);
       await signInUser(data.email, data.password);
+      successToast(AUTH_MESSAGE?.SIGN_IN_SUCCESS);
       router.push("/");
     } catch (err) {
-      alert("Invalid credentials");
+      const error = err as Error;
+      errorToast(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -62,8 +75,8 @@ const SignIn = () => {
                   rules={{
                     required: "Email is required",
                     pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: "Invalid email address",
+                      value: REGEX_PATTERN.EMAIL,
+                      message: FIELD_MESSAGE.INVALID_EMAIL,
                     },
                   }}
                   isRequiredField
@@ -88,10 +101,10 @@ const SignIn = () => {
                     errorMessage={errors.password?.message}
                     control={control}
                     rules={{
-                      required: "Password is required",
+                      required: FIELD_MESSAGE.REQUIRED,
                       minLength: {
-                        value: 8,
-                        message: "Password must be at least 8 characters long",
+                        value: MIN_PASSWORD_CHAR,
+                        message: FIELD_MESSAGE?.MIN_PASSWORD_CHAR,
                       },
                     }}
                     isRequiredField
@@ -110,8 +123,9 @@ const SignIn = () => {
                 <Button
                   type="submit"
                   className="w-full bg-(--auth-pages-bg) rounded-lg text-white px-5 py-3 font-bold cursor-pointer text-sm md:text-base xl:text-xl"
+                  disabled={loading}
                 >
-                  {false ? "Signing In...." : "Sign In"}
+                  {loading ? "Signing In...." : "Sign In"}
                 </Button>
                 <div className="flex flex-col md:flex-row items-center justify-center gap-2 pt-5 lg:pt-10">
                   <span className="text-sm lg:text-base text-(--secondary-text-color) font-medium">

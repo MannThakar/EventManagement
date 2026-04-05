@@ -35,6 +35,7 @@
   --inbox-button-bg: #fafbfd;
   --inbox-chat-border-color: #e0e0e0;
   --inbox-module-border-color: #b9b9b9;
+  --card-background-img: url("/svg/02_EVENT_CARD_VECTOR.svg");
 }
 
 @theme {
@@ -329,4 +330,19 @@ input[type="search"] {
 /* Handle on hover */
 .scroll-style::-webkit-scrollbar-thumb:hover {
   background: #47b454;
+}
+
+.card {
+  position: relative;
+  z-index: 0;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--card-background-img);
+  background-size: cover;
+  opacity: 0.8;
+  z-index: -1;
 }

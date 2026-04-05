@@ -4,4 +4,9 @@ interface iSignUp {
   password: string;
 }
 
-export type { iSignUp };
+interface iSignIn {
+  email: string;
+  password: string;
+}
+
+export type { iSignUp, iSignIn };

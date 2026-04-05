@@ -1,15 +1,32 @@
 "use client";
 import { iAction, iState } from "@/interface/context";
+import { iEvent } from "@/interface/event";
 import React, { createContext, useContext, useReducer } from "react";
 
 const initialState: iState = {
+  selectedEvent: null,
   isCollapse: false,
+  isModalOpen: false,
+  isReadOnly: false,
+  events: [],
+  search: "",
 };
 
 function reducer(state: iState, action: iAction): iState {
   switch (action.type) {
     case "SET_IS_COLLAPSE":
       return { ...state, isCollapse: action.value };
+    case "SET_IS_MODAL_OPEN":
+      return { ...state, isModalOpen: action.value };
+    case "SET_SELECTED_EVENT":
+      return { ...state, selectedEvent: action.value };
+    case "SET_IS_READ_ONLY":
+      return { ...state, isReadOnly: action.value };
+    case "SET_EVENTS":
+      return { ...state, events: action.value };
+    case "SET_SEARCH":
+      return { ...state, search: action.value };
+
     default:
       return state;
   }
@@ -43,4 +60,31 @@ const setIsCollapse = (dispatch: React.Dispatch<iAction>, value: boolean) => {
   dispatch({ type: "SET_IS_COLLAPSE", value });
 };
 
-export { setIsCollapse };
+const setIsModalValue = (dispatch: React.Dispatch<iAction>, value: boolean) => {
+  dispatch({ type: "SET_IS_MODAL_OPEN", value });
+};
+
+const setSelectedEvent = (dispatch: React.Dispatch<iAction>, value: iEvent) => {
+  dispatch({ type: "SET_SELECTED_EVENT", value });
+};
+
+const setIsReadOnly = (dispatch: React.Dispatch<iAction>, value: boolean) => {
+  dispatch({ type: "SET_IS_READ_ONLY", value });
+};
+
+const setEvents = (dispatch: React.Dispatch<iAction>, value: iEvent[]) => {
+  dispatch({ type: "SET_EVENTS", value });
+};
+
+const setSearch = (dispatch: React.Dispatch<iAction>, value: string) => {
+  dispatch({ type: "SET_SEARCH", value });
+};
+
+export {
+  setIsCollapse,
+  setIsModalValue,
+  setSelectedEvent,
+  setIsReadOnly,
+  setEvents,
+  setSearch,
+};

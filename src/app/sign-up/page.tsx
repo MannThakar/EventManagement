@@ -1,30 +1,43 @@
 "use client";
-import React from "react";
-import Input from "@/components/Input";
-import Button from "@/components/Button";
+import React, { useState } from "react";
+import Button from "@/components/common/Button";
 import Link from "next/link";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
-import { signUpUser } from "@/utils/helper";
+import { errorToast, signUpUser, successToast } from "@/utils/helper";
 import { useRouter } from "next/navigation";
+import {
+  AUTH_MESSAGE,
+  FIELD_MESSAGE,
+  MIN_PASSWORD_CHAR,
+} from "@/utils/message";
+import { iSignUp } from "@/interface/auth";
+import { REGEX_PATTERN } from "@/utils/constant";
+import Input from "@/components/common/Input";
 
 const SignUp = () => {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm<iSignUp>();
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: iSignUp) => {
     try {
+      setLoading(true);
       await signUpUser(data);
+      successToast(AUTH_MESSAGE?.SIGN_UP_SUCCESS);
       router.push("/sign-in");
     } catch (err) {
       const error = err as Error;
-      alert(error.message);
+      errorToast(error.message);
+    } finally {
+      setLoading(false);
     }
   };
+
   return (
     <div className="bg-(--auth-pages-bg) w-screen h-screen top-0 left-0 relative">
       <div className="absolute w-full h-full top-0 left-0 z-10">
@@ -57,7 +70,7 @@ const SignUp = () => {
                   showError={!!errors.name}
                   errorMessage={errors.name?.message}
                   control={control}
-                  rules={{ required: "Name is required" }}
+                  rules={{ required: FIELD_MESSAGE.REQUIRED }}
                   isRequiredField
                 />
               </div>
@@ -71,10 +84,10 @@ const SignUp = () => {
                   errorMessage={errors.email?.message}
                   control={control}
                   rules={{
-                    required: "Email is required",
+                    required: FIELD_MESSAGE.REQUIRED,
                     pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: "Invalid email address",
+                      value: REGEX_PATTERN?.EMAIL,
+                      message: FIELD_MESSAGE.INVALID_EMAIL,
                     },
                   }}
                   isRequiredField
@@ -90,10 +103,10 @@ const SignUp = () => {
                   errorMessage={errors.password?.message}
                   control={control}
                   rules={{
-                    required: "Password is required",
+                    required: FIELD_MESSAGE.REQUIRED,
                     minLength: {
-                      value: 8,
-                      message: "Password must be at least 8 characters long",
+                      value: MIN_PASSWORD_CHAR,
+                      message: FIELD_MESSAGE.MIN_PASSWORD_CHAR,
                     },
                   }}
                   isRequiredField
@@ -105,8 +118,9 @@ const SignUp = () => {
                 <Button
                   type="submit"
                   className="w-full bg-(--auth-pages-bg) rounded-lg text-white px-5 py-2.5 font-bold cursor-pointer text-sm md:text-base xl:text-xl"
+                  disabled={loading}
                 >
-                  {false ? "Signing Up...." : "Sign Up"}
+                  {loading ? "Signing Up...." : "Sign Up"}
                 </Button>
                 <div className="flex items-center justify-center gap-2 pt-6">
                   <span className="text-sm lg:text-base text-(--secondary-text-color) font-medium">
