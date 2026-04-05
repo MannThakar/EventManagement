@@ -77,6 +77,23 @@ interface iNoDataFound {
   textClassName?: string;
 }
 
+interface iOption {
+  label: string;
+  value: string | number;
+}
+
+interface iDropdownProps {
+  options: iOption[];
+  value?: string | number;
+  onChange?: (value: string) => void;
+  placeholder?: string;
+  disabled?: boolean;
+  className?: string;
+  name?: string;
+  error?: string;
+  parentClassName?: string;
+}
+
 export type {
   iInputProps,
   iCardProps,
@@ -85,4 +102,6 @@ export type {
   iModalProps,
   iSearchbarProps,
   iNoDataFound,
+  iOption,
+  iDropdownProps,
 };

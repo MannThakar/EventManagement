@@ -9,11 +9,12 @@ const FIELD_MESSAGE = {
   REQUIRED: "This field is required",
   INVALID_EMAIL: "Invalid email address",
   MIN_PASSWORD_CHAR: `Password must be at least ${MIN_PASSWORD_CHAR} characters`,
+  END_TIME_LESS_THAN_START_TIME: "End date must be greater than start date",
+  START_TIME_GREATER_THAN_END_TIME: "Start time must be before end time",
 };
 
 const EVENT_MESSAGE = {
-  CREATE_SUCCESS: "Event created successfully",
-  UPDATE_SUCCESS: "Event updated successfully",
+  SUCCESS: "Event saved successfully",
   DELETE_SUCCESS: "Event deleted successfully",
 };
 

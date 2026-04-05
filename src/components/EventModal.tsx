@@ -3,7 +3,11 @@ import React, { useEffect } from "react";
 import Modal from "./common/Modal";
 import { EventModalProps, iEvent } from "@/interface/event";
 import { Controller, useForm, useWatch } from "react-hook-form";
-import { EVENT_CATEGORY, EVENT_TYPE_OPTIONS } from "@/utils/constant";
+import {
+  EVENT_CATEGORY,
+  EVENT_TYPE_OPTIONS,
+  EVENT_TYPES,
+} from "@/utils/constant";
 import { FIELD_MESSAGE } from "@/utils/message";
 import TextArea from "./common/TextArea";
 import dayjs from "dayjs";
@@ -47,7 +51,6 @@ const EventModal: React.FC<EventModalProps> = ({ onClose, onSave }) => {
 
   const onSubmit = (data: iEvent) => {
     onSave?.(data);
-    onClose();
   };
 
   useEffect(() => {
@@ -68,7 +71,7 @@ const EventModal: React.FC<EventModalProps> = ({ onClose, onSave }) => {
 
         return (
           dayjs(value).isBefore(dayjs(endDate)) ||
-          "Start time must be before end time"
+          FIELD_MESSAGE.START_TIME_GREATER_THAN_END_TIME
         );
       },
     });
@@ -80,7 +83,7 @@ const EventModal: React.FC<EventModalProps> = ({ onClose, onSave }) => {
 
         return (
           dayjs(value).isAfter(dayjs(startDate)) ||
-          "End time must be after start time"
+          FIELD_MESSAGE.END_TIME_LESS_THAN_START_TIME
         );
       },
     });
@@ -91,7 +94,7 @@ const EventModal: React.FC<EventModalProps> = ({ onClose, onSave }) => {
       reset({
         id: selectedEvent.id || "",
         title: selectedEvent.title || "",
-        eventType: selectedEvent.eventType || EVENT_TYPE_OPTIONS[0]?.value,
+        eventType: selectedEvent.eventType || EVENT_TYPE_OPTIONS?.[0]?.value,
         location: selectedEvent.location || "",
         eventLink: selectedEvent.eventLink || "",
         startDateTime: selectedEvent.startDateTime || "",
@@ -143,7 +146,7 @@ const EventModal: React.FC<EventModalProps> = ({ onClose, onSave }) => {
           )}
         />
 
-        {eventType === "inPerson" && (
+        {eventType === EVENT_TYPES.IN_PERSON && (
           <Input
             name="location"
             label="Location"
@@ -158,7 +161,7 @@ const EventModal: React.FC<EventModalProps> = ({ onClose, onSave }) => {
           />
         )}
 
-        {eventType === "online" && (
+        {eventType === EVENT_TYPES.ONLINE && (
           <Input
             name="eventLink"
             label="Event Link"

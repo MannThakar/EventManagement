@@ -10,6 +10,7 @@ const initialState: iState = {
   isReadOnly: false,
   events: [],
   search: "",
+  filters: {},
 };
 
 function reducer(state: iState, action: iAction): iState {
@@ -26,6 +27,11 @@ function reducer(state: iState, action: iAction): iState {
       return { ...state, events: action.value };
     case "SET_SEARCH":
       return { ...state, search: action.value };
+    case "SET_FILTERS":
+      return {
+        ...state,
+        filters: { ...state.filters, ...action.value },
+      };
 
     default:
       return state;
@@ -80,6 +86,13 @@ const setSearch = (dispatch: React.Dispatch<iAction>, value: string) => {
   dispatch({ type: "SET_SEARCH", value });
 };
 
+const setFilters = (
+  dispatch: React.Dispatch<iAction>,
+  value: Partial<iState["filters"]>,
+) => {
+  dispatch({ type: "SET_FILTERS", value });
+};
+
 export {
   setIsCollapse,
   setIsModalValue,
@@ -87,4 +100,5 @@ export {
   setIsReadOnly,
   setEvents,
   setSearch,
+  setFilters,
 };

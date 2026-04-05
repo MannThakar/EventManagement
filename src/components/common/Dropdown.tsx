@@ -2,30 +2,16 @@ import React from "react";
 import clsx from "clsx";
 import Label from "./Label";
 import { IoChevronDown } from "react-icons/io5";
+import { iDropdownProps } from "@/interface/common";
 
-interface Option {
-  label: string;
-  value: string | number;
-}
-
-interface DropdownProps {
-  options: Option[];
-  value?: string | number;
-  onChange?: (value: string) => void;
-  placeholder?: string;
-  disabled?: boolean;
-  className?: string;
-  name?: string;
-  error?: string;
-}
-
-const Dropdown: React.FC<DropdownProps> = ({
+const Dropdown: React.FC<iDropdownProps> = ({
   options = [],
   value,
   onChange,
   placeholder = "Select an option",
   disabled = false,
   className,
+  parentClassName,
   name,
   error,
 }) => {
@@ -33,7 +19,7 @@ const Dropdown: React.FC<DropdownProps> = ({
     <div className="flex flex-col w-full">
       <div className="flex flex-col">
         <Label label={placeholder} isRequiredField />
-        <div className="relative">
+        <div className={clsx("relative", parentClassName)}>
           <select
             name={name}
             value={value}
