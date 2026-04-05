@@ -1,26 +1,349 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  font-family: "Nunito Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --auth-pages-bg: #4880ff;
+  --main-primary-color: #ffffff;
+  --primary-text-color: #202224;
+  --secondary-text-color: rgba(0, 0, 0, 0.6);
+  --input-bg: #f1f4f9;
+  --input-border: #d8d8d8;
+  --like-button-bg: #f9f9f9;
+  --price-text-color: #4880ff;
+  --edit-button-bg: #e2eaf8;
+  --background-color: #f5f6fa;
+  --banner-button-bg: #ff8743;
+  --primary-background-color: #f5f6fa;
+  --dashboard-primary-color: #404040;
+  --dashboard-secondary-color: #565656;
+  --button-border-color: #d5d5d5;
+  --mail-listing-border-color: rgb(151, 151, 151, 0.06);
+  --inbox-table-border-color: #e0e0e0;
+  --helper-text-color: #434343;
+  --inbox-button-bg: #fafbfd;
+  --inbox-chat-border-color: #e0e0e0;
+  --inbox-module-border-color: #b9b9b9;
+  --card-background-img: url("/svg/02_EVENT_CARD_VECTOR.svg");
+  --xxl: 2560px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@theme {
+  --breakpoint-3xl: 120rem;
+  --breakpoint-4xl: 160rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Change autofill background color for WebKit/Blink browsers (Chrome, Safari, Opera, Edge) */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+select:-webkit-autofill,
+select:-webkit-autofill:hover {
+  -webkit-box-shadow: 0 0 0px 1000px #f1f4f9 inset;
+  transition: background-color 5000s ease-in-out 0s;
+  -webkit-text-fill-color: black;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* For Firefox */
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* Remove default search icon (Chrome, Safari, Edge) */
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+}
+
+/* Firefox */
+input[type="search"] {
+  appearance: none;
+}
+
+.responsive-navbar {
+  display: none !important;
+}
+
+.nav-button-visible {
+  display: none !important;
+}
+
+.scroll-anchor-none {
+  overflow-anchor: none;
+}
+
+@media only screen and (max-width: 600px) {
+  .responsive-navbar {
+    display: block !important;
+    margin-top: 5px;
+  }
+
+  .nav-button-hidden {
+    display: none !important;
+  }
+
+  .nav-button-visible {
+    display: block !important;
+  }
+
+  .responsive-sidebar-main-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    z-index: 50;
+    background-color: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(3px);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .responsive-sidebar-main-wrapper.active {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    z-index: 50;
+    background-color: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(3px);
+    opacity: 100;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .responsive-sidebar-main-wrapper .responsive-sidebar-inner-wrapper {
+    max-width: 300px;
+    background-color: var(--main-primary-color);
+    transform: translateX(-100%);
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .responsive-sidebar-main-wrapper.active .responsive-sidebar-inner-wrapper {
+    max-width: 300px;
+    background-color: var(--main-primary-color);
+    transform: translateX(0%);
+    opacity: 100;
+    visibility: visible;
+  }
+
+  .responsive-sidebar-main-wrapper
+    .responsive-sidebar-inner-wrapper
+    .sidebar-links {
+    transform: translate(0) !important;
+    opacity: 100 !important;
+    display: block !important;
+    translate: 0 !important;
+  }
+
+  .responsive-sidebar-main-wrapper
+    .responsive-sidebar-inner-wrapper
+    .sidebar-logo-wrapper {
+    max-width: 100% !important;
+    text-align: start !important;
+    justify-content: space-between;
+    padding: 12px;
+  }
+
+  .responsive-sidebar-main-wrapper
+    .responsive-sidebar-inner-wrapper
+    .sidebar-logo-wrapper
+    .sidebar-close-btn {
+    display: block !important;
+  }
+
+  .responsive-sidebar-main-wrapper
+    .responsive-sidebar-inner-wrapper
+    .sidebar-logo-wrapper
+    .sidebar-logo-main {
+    display: flex !important;
+  }
+
+  .responsive-sidebar-main-wrapper
+    .responsive-sidebar-inner-wrapper
+    .sidebar-logo-wrapper
+    .sidebar-logo-second {
+    display: none !important;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@media (min-width: 600px) and (max-width: 1024px) {
+  .nav-button-hidden {
+    display: none !important;
+  }
+
+  .nav-button-visible {
+    display: block !important;
+  }
+
+  .responsive-sidebar-main-wrapper.active {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    z-index: 50;
+    background-color: rgba(0, 0, 0, 0);
+    background-color: var(--main-primary-color);
+    max-width: 240px;
+  }
+
+  .responsive-sidebar-main-wrapper.active .responsive-sidebar-inner-wrapper {
+    max-width: 240px;
+    background-color: var(--main-primary-color);
+    transform: translateX(0%);
+    opacity: 100;
+    visibility: visible;
+  }
+
+  .responsive-sidebar-main-wrapper.active
+    .responsive-sidebar-inner-wrapper
+    .sidebar-links {
+    transform: translate(0) !important;
+    opacity: 100 !important;
+    display: block !important;
+    translate: 0 !important;
+  }
+
+  .responsive-sidebar-main-wrapper.active
+    .responsive-sidebar-inner-wrapper
+    .sidebar-logo-wrapper
+    .sidebar-close-btn {
+    display: block !important;
+  }
+
+  .responsive-sidebar-main-wrapper
+    .responsive-sidebar-inner-wrapper
+    .sidebar-logo-wrapper {
+    max-width: 100% !important;
+    text-align: start !important;
+    justify-content: space-between;
+    padding: 12px 26px;
+  }
+}
+
+/* WebKit browsers (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background-color);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  border: 2px solid var(--background-color);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.25) var(--background-color);
+}
+
+.pricing-card-bg {
+  background-color: white;
+  background-repeat: repeat;
+  background-position: center;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--button-border-color) 25%,
+    var(--primary-background-color) 37%,
+    var(--button-border-color) 63%
+  );
+  background-size: 400% 100%;
+  animation: skeleton-loading 1.4s ease infinite;
+}
+
+.hide-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.hide-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* width */
+.scroll-style::-webkit-scrollbar {
+  width: 2px;
+  height: 3px;
+}
+
+/* Track */
+.scroll-style::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px transparent;
+  border-radius: 14px;
+}
+
+/* Handle */
+.scroll-style::-webkit-scrollbar-thumb {
+  background: #47b454;
+  border-radius: 14px;
+}
+
+/* Handle on hover */
+.scroll-style::-webkit-scrollbar-thumb:hover {
+  background: #47b454;
+}
+
+.card {
+  position: relative;
+  z-index: 0;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--card-background-img);
+  background-size: cover;
+  opacity: 0.8;
+  z-index: -1;
 }

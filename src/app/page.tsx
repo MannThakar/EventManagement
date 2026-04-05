@@ -1,65 +1,222 @@
-import Image from "next/image";
+"use client";
+import React, { useCallback, useEffect, useMemo } from "react";
+import Card from "@/components/common/Card";
+import EventModal from "@/components/EventModal";
+import Heading from "@/components/common/Heading";
+import {
+  setSelectedEvent,
+  setIsModalValue,
+  useAppContext,
+  setIsReadOnly,
+  setEvents,
+  setFilters,
+} from "@/context";
+import { iEvent } from "@/interface/event";
+import PrivateRoute from "@/route/PrivateRoute";
+import {
+  deleteEvent,
+  errorToast,
+  getAllEvents,
+  hasTimeConflict,
+  saveEvent,
+  successToast,
+} from "@/utils/helper";
+import { EVENT_MESSAGE } from "@/utils/message";
+import useDebounce from "@/hooks/useDebounce";
+import NoDataFound from "@/components/common/NoDataFound";
+import FilterHeader from "@/components/Filters";
+import { DEFAULT_IMAGES } from "@/utils/constant";
 
-export default function Home() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+const Home = () => {
+  const {
+    state: { events, search, filters },
+    dispatch,
+  } = useAppContext();
+
+  const debouncedSearch = useDebounce(search, 500);
+
+  const loadEvents = useCallback(async () => {
+    try {
+      const data = await getAllEvents();
+      setEvents(dispatch, data);
+    } catch (err) {
+      errorToast(err as string);
+    }
+  }, [dispatch]);
+
+  const handleEdit = (event: iEvent) => {
+    setSelectedEvent(dispatch, event);
+    setIsModalValue(dispatch, true);
+  };
+
+  const handleClose = useCallback(() => {
+    setIsModalValue(dispatch, false);
+    setIsReadOnly(dispatch, false);
+    setSelectedEvent(dispatch, {} as iEvent);
+  }, [dispatch]);
+
+  const handleSave = useCallback(
+    async (updatedEvent: iEvent) => {
+      try {
+        const eventWithId = {
+          ...updatedEvent,
+          image:
+            DEFAULT_IMAGES[
+              updatedEvent.category as keyof typeof DEFAULT_IMAGES
+            ] || "",
+          id: updatedEvent.id || crypto.randomUUID(),
+        };
+
+        const conflict = hasTimeConflict(eventWithId, events);
+
+        if (conflict) {
+          errorToast("This event time overlaps with another event.");
+          return;
+        }
+
+        await saveEvent(eventWithId);
+        await loadEvents();
+        successToast(EVENT_MESSAGE?.SUCCESS);
+        handleClose();
+      } catch (err) {
+        errorToast(err as string);
+      }
+    },
+    [events, loadEvents, handleClose],
   );
-}
+
+  const handleDelete = useCallback(
+    async (id: string) => {
+      if (!id) return;
+      try {
+        await deleteEvent(id);
+        await loadEvents();
+        successToast(EVENT_MESSAGE?.DELETE_SUCCESS);
+      } catch (err) {
+        errorToast(err as string);
+      }
+    },
+    [loadEvents],
+  );
+
+  const handleView = useCallback(
+    (item: iEvent) => {
+      setSelectedEvent(dispatch, item);
+      setIsModalValue(dispatch, true);
+      setIsReadOnly(dispatch, true);
+    },
+    [dispatch],
+  );
+
+  const handleResetFilters = useCallback(() => {
+    setFilters(dispatch, {
+      eventType: "",
+      category: "",
+      startDate: "",
+      endDate: "",
+      sortBy: "",
+    });
+  }, [dispatch]);
+
+  const handleFilterChange = useCallback(
+    (key: string, value: string) => {
+      setFilters(dispatch, {
+        [key]: value,
+      });
+    },
+    [dispatch],
+  );
+
+  const filteredEvents = useMemo(
+    () =>
+      events
+        ?.filter((event) => {
+          const query = debouncedSearch.toLowerCase();
+
+          const matchesSearch =
+            event.title.toLowerCase().includes(query) ||
+            event.description?.toLowerCase().includes(query);
+
+          const matchesEventType = filters.eventType
+            ? event.eventType === filters.eventType
+            : true;
+
+          const matchesCategory = filters.category
+            ? event.category === filters.category
+            : true;
+
+          const matchesStartDate = filters.startDate
+            ? new Date(event.startDateTime) >= new Date(filters.startDate)
+            : true;
+
+          const matchesEndDate = filters.endDate
+            ? new Date(event.endDateTime) <=
+              new Date(new Date(filters.endDate).setHours(23, 59, 59, 999))
+            : true;
+
+          return (
+            matchesSearch &&
+            matchesEventType &&
+            matchesCategory &&
+            matchesStartDate &&
+            matchesEndDate
+          );
+        })
+        ?.sort((a, b) => {
+          if (!filters.sortBy) return 0;
+
+          if (filters.sortBy === "startDate") {
+            return (
+              new Date(a.startDateTime).getTime() -
+              new Date(b.startDateTime).getTime()
+            );
+          }
+
+          if (filters.sortBy === "title") {
+            return a.title.localeCompare(b.title);
+          }
+
+          return 0;
+        }),
+    [events, debouncedSearch, filters],
+  );
+
+  useEffect(() => {
+    loadEvents();
+  }, [loadEvents]);
+
+  return (
+    <section className="">
+      <Heading text="Upcoming Events" />
+      <FilterHeader
+        onChange={handleFilterChange}
+        onReset={handleResetFilters}
+      />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 row-gap-4">
+        {filteredEvents?.length === 0 ? (
+          <div className="col-span-full w-full mt-40">
+            <NoDataFound
+              text="No Upcoming Events Found"
+              className="mx-auto w-full"
+              textClassName="mt-10"
+            />
+          </div>
+        ) : (
+          filteredEvents?.map((item) => (
+            <Card
+              key={item.id}
+              item={item}
+              onEditClick={() => handleEdit(item)}
+              onReadClick={() => handleView(item)}
+              onDeleteClick={() => handleDelete(item.id as string)}
+            />
+          ))
+        )}
+
+        <EventModal onClose={handleClose} onSave={handleSave} />
+      </div>
+    </section>
+  );
+};
+
+export default PrivateRoute(Home);
