@@ -23,12 +23,12 @@ const Modal = ({
 
       <div
         className={clsx(
+          "relative z-10 w-115 rounded-2xl bg-white shadow-[2px_8px_12px_3px_rgba(0,0,0,0.1)] ring-1 ring-black/10 outline-none",
           className,
-          "relative z-10 w-115 rounded-2xl bg-white shadow-[2px_8px_12px_3px_rgba(0,0,0,0.1)] ring-1 ring-black/10 outline-none overflow-hidden ",
         )}
       >
         {/*Note: Header */}
-        <div className="flex items-center justify-between px-6 mt-6">
+        <div className="flex items-center justify-between px-6 pt-6 sticky top-0 bg-white z-20">
           <h2 className="text-lg font-bold text-(--primary-text-color)">
             {title}
           </h2>

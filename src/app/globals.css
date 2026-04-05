@@ -36,6 +36,7 @@
   --inbox-chat-border-color: #e0e0e0;
   --inbox-module-border-color: #b9b9b9;
   --card-background-img: url("/svg/02_EVENT_CARD_VECTOR.svg");
+  --xxl: 2560px;
 }
 
 @theme {

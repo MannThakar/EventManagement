@@ -56,7 +56,7 @@ const TextArea = ({
                     "cursor-not-allowed": disabled,
                   },
                 )}
-                rows={6}
+                rows={5}
                 style={{ resize: "none" }}
               />
             )}

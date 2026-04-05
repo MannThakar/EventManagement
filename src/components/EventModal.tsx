@@ -113,10 +113,10 @@ const EventModal: React.FC<EventModalProps> = ({ onClose, onSave }) => {
       isOpen={isModalOpen}
       onClose={onClose}
       title="Edit Event"
-      className="w-300 h-fit"
+      className="w-180 max-h-140 lg:w-230 lg:max-h-140 xl:w-300 xl:max-h-160 h-full 2xl:w-300 2xl:max-h-fit overflow-auto"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <div className="grid grid-cols-2 gap-5">
+      <div className="grid grid-cols-2 gap-5 h-full ">
         <Input
           name="title"
           label="Title"
@@ -240,4 +240,4 @@ const EventModal: React.FC<EventModalProps> = ({ onClose, onSave }) => {
   );
 };
 
-export default EventModal;
+export default React.memo(EventModal);

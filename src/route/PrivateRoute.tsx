@@ -1,5 +1,6 @@
 "use client";
 
+import Loader from "@/components/common/Loader";
 import Layout from "@/components/Layout";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -22,7 +23,7 @@ function PrivateRoute<P extends object>(
     }, [router]);
 
     if (isLoading) {
-      return <div>Loading...</div>;
+      return <Loader />;
     }
 
     return (
