@@ -95,3 +95,23 @@ export const getNextTimeSlot = () => {
 
   return now.minute(roundedMinutes).second(0).toDate();
 };
+
+export const dateTimeFormatter = (date: string) => {
+  if (!date) return;
+
+  return dayjs(date).format("DD MMM, YYYY • hh:mm A");
+};
+
+export const hasTimeConflict = (newEvent: iEvent, events: iEvent[]) => {
+  return events?.some((event) => {
+    if (event?.id === newEvent?.id) return false;
+
+    const existingStart = dayjs(event.startDateTime);
+    const existingEnd = dayjs(event.endDateTime);
+
+    const newStart = dayjs(newEvent.startDateTime);
+    const newEnd = dayjs(newEvent.endDateTime);
+
+    return newStart.isBefore(existingEnd) && newEnd.isAfter(existingStart);
+  });
+};

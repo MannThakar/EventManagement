@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { MdDelete, MdEdit, MdVisibility } from "react-icons/md";
 import { iCardProps } from "@/interface/common";
+import { dateTimeFormatter } from "@/utils/helper";
+import { EVENT_TYPE_ALIAS } from "@/utils/constant";
 
 const Card: React.FC<iCardProps> = ({
   item,
@@ -11,11 +13,11 @@ const Card: React.FC<iCardProps> = ({
   if (!item || Object.keys(item).length === 0) return null;
 
   return (
-    <section className="card relative group w-74 h-84 bg-white rounded-2xl overflow-hidden shadow-md">
+    <section className="card relative group w-74 h-94 bg-white rounded-2xl overflow-hidden shadow-md">
       <Image
         src={item?.image || ""}
         alt={item?.title ?? ""}
-        className="w-35 h-35 object-cover rounded-full mx-auto mt-9"
+        className="w-35 h-35 object-cover rounded-full mx-auto mt-8"
         width={200}
         height={200}
       />
@@ -28,7 +30,12 @@ const Card: React.FC<iCardProps> = ({
         <p className="text-sm text-gray-500">{item?.category || "-"}</p>
 
         <p className="text-xs text-gray-500">
-          {item?.startDateTime} → {item?.endDateTime}
+          {dateTimeFormatter(item?.startDateTime)} →{" "}
+          {dateTimeFormatter(item?.endDateTime)}
+        </p>
+
+        <p className="text-sm text-gray-500">
+          {EVENT_TYPE_ALIAS[item?.eventType as keyof typeof EVENT_TYPE_ALIAS]}
         </p>
 
         <p className="text-xs text-gray-400 mt-3">
