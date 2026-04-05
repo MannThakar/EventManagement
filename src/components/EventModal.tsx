@@ -29,7 +29,12 @@ const EventModal: React.FC<EventModalProps> = ({ onClose, onSave }) => {
     handleSubmit,
     getValues,
     formState: { errors },
-  } = useForm<iEvent>();
+  } = useForm<iEvent>({
+    defaultValues: {
+      eventType: EVENT_TYPE_OPTIONS?.[0]?.value,
+      category: EVENT_CATEGORY?.[0]?.value,
+    },
+  });
 
   const eventType = useWatch({
     control,
@@ -89,7 +94,7 @@ const EventModal: React.FC<EventModalProps> = ({ onClose, onSave }) => {
       reset({
         id: selectedEvent.id || "",
         title: selectedEvent.title || "",
-        eventType: selectedEvent.eventType || EVENT_TYPE_OPTIONS?.[0]?.value,
+        eventType: selectedEvent.eventType || "",
         location: selectedEvent.location || "",
         eventLink: selectedEvent.eventLink || "",
         startDateTime: selectedEvent.startDateTime || "",
