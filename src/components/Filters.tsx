@@ -47,8 +47,8 @@ const FilterHeader: React.FC<Props> = ({ onChange, onReset }) => {
   } = state;
 
   return (
-    <header>
-      <div className="bg-white rounded-lg flex flex-wrap items-center border border-gray-300 w-[65%] mb-10 py-0 px-3 gap-2">
+    <header className="w-full">
+      <div className="bg-white rounded-lg flex overflow-auto items-center border border-gray-300 max-w-260 mb-10 py-0 px-3 gap-2 ">
         <div className="flex items-center justify-center px-3">
           <LuFilter className="w-5 h-5 text-gray-500" />
         </div>
@@ -115,7 +115,7 @@ const FilterHeader: React.FC<Props> = ({ onChange, onReset }) => {
         <Divider />
 
         <Button
-          className="flex items-center gap-2 px-3 text-green-600 font-medium"
+          className="flex items-center gap-2 px-3 text-green-600 font-medium whitespace-nowrap"
           onClick={() => setIsModalValue(dispatch, true)}
         >
           <MdOutlineCreateNewFolder className="w-5 h-5" />
@@ -136,4 +136,4 @@ const FilterHeader: React.FC<Props> = ({ onChange, onReset }) => {
   );
 };
 
-export default FilterHeader;
+export default React.memo(FilterHeader);

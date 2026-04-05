@@ -17,8 +17,8 @@ interface iInputProps {
   autoFocus?: boolean;
   autoComplete?: "on" | "off";
   maxLength?: number;
-  control?: unknown;
-  rules?: unknown;
+  control?: any;
+  rules?: object;
 
   // Validation
   isRequiredField?: boolean;

@@ -1,3 +1,4 @@
+import React from "react";
 import Image from "next/image";
 import { MdDelete, MdEdit, MdVisibility } from "react-icons/md";
 import { iCardProps } from "@/interface/common";
@@ -13,7 +14,7 @@ const Card: React.FC<iCardProps> = ({
   if (!item || Object.keys(item).length === 0) return null;
 
   return (
-    <section className="card relative group w-74 h-94 bg-white rounded-2xl overflow-hidden shadow-md">
+    <section className="card relative group w-84 h-94 bg-white rounded-2xl overflow-hidden shadow-md">
       <Image
         src={item?.image || ""}
         alt={item?.title ?? ""}
@@ -78,4 +79,4 @@ const Card: React.FC<iCardProps> = ({
   );
 };
 
-export default Card;
+export default React.memo(Card);
