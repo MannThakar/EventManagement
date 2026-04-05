@@ -7,7 +7,7 @@ const Button = ({
   disabled = false,
   onClick,
   ...args
-}: any) => {
+}: React.ButtonHTMLAttributes<HTMLButtonElement>) => {
   return (
     <button
       type={type}

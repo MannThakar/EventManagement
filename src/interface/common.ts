@@ -1,4 +1,5 @@
 import React from "react";
+import { iEvent } from "./event";
 
 interface iInputProps {
   name: string;
@@ -16,6 +17,8 @@ interface iInputProps {
   autoFocus?: boolean;
   autoComplete?: "on" | "off";
   maxLength?: number;
+  control?: unknown;
+  rules?: unknown;
 
   // Validation
   isRequiredField?: boolean;
@@ -33,4 +36,53 @@ interface iInputProps {
   viewPasswordBtn?: boolean;
 }
 
-export type { iInputProps };
+interface iCardProps {
+  item?: iEvent;
+  onEditClick?: (event: iEvent) => void;
+  onReadClick?: (event: iEvent) => void;
+  onDeleteClick?: (event: string) => void;
+}
+
+interface iSideBarRoute {
+  path: string;
+  name: string;
+  icon: React.ReactNode;
+  disabled?: boolean;
+}
+
+interface iSideBarProps {
+  isCollapse?: boolean;
+  data?: iSideBarRoute;
+}
+
+interface iModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  className?: string;
+  formClassName?: string;
+  onSubmit?: () => void;
+  children: React.ReactNode;
+}
+
+interface iSearchbarProps {
+  placeholder: string;
+  isResponsive?: boolean;
+  className?: string;
+}
+
+interface iNoDataFound {
+  text?: string;
+  className?: string;
+  textClassName?: string;
+}
+
+export type {
+  iInputProps,
+  iCardProps,
+  iSideBarProps,
+  iSideBarRoute,
+  iModalProps,
+  iSearchbarProps,
+  iNoDataFound,
+};
