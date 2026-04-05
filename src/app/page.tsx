@@ -150,7 +150,8 @@ const Home = () => {
             : true;
 
           const matchesEndDate = filters.endDate
-            ? new Date(event.endDateTime) <= new Date(filters.endDate)
+            ? new Date(event.endDateTime) <=
+              new Date(new Date(filters.endDate).setHours(23, 59, 59, 999))
             : true;
 
           return (

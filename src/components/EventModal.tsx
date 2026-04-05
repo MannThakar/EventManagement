@@ -11,6 +11,7 @@ import {
 import { FIELD_MESSAGE } from "@/utils/message";
 import TextArea from "./common/TextArea";
 import dayjs from "dayjs";
+import { getNextTimeSlot } from "@/utils/helper";
 import { useAppContext } from "@/context";
 import Input from "./common/Input";
 import Dropdown from "./common/Dropdown";
@@ -24,7 +25,9 @@ const EventModal: React.FC<EventModalProps> = ({ onClose, onSave }) => {
     setValue,
     register,
     reset,
+    trigger,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm<iEvent>();
 
@@ -54,23 +57,14 @@ const EventModal: React.FC<EventModalProps> = ({ onClose, onSave }) => {
   };
 
   useEffect(() => {
-    if (startDate && !endDate) {
-      setValue(
-        "endDateTime",
-        dayjs(startDate).add(30, "minute").toISOString(),
-        { shouldValidate: false },
-      );
-    }
-  }, [startDate]);
-
-  useEffect(() => {
     register("startDateTime", {
       required: FIELD_MESSAGE.REQUIRED,
       validate: (value) => {
-        if (!endDate) return true;
+        const end = getValues("endDateTime");
+        if (!end) return true;
 
         return (
-          dayjs(value).isBefore(dayjs(endDate)) ||
+          dayjs(value).isBefore(dayjs(end)) ||
           FIELD_MESSAGE.START_TIME_GREATER_THAN_END_TIME
         );
       },
@@ -79,15 +73,16 @@ const EventModal: React.FC<EventModalProps> = ({ onClose, onSave }) => {
     register("endDateTime", {
       required: FIELD_MESSAGE.REQUIRED,
       validate: (value) => {
-        if (!startDate) return true;
+        const start = getValues("startDateTime");
+        if (!start) return true;
 
         return (
-          dayjs(value).isAfter(dayjs(startDate)) ||
+          dayjs(value).isAfter(dayjs(start)) ||
           FIELD_MESSAGE.END_TIME_LESS_THAN_START_TIME
         );
       },
     });
-  }, [register, startDate, endDate]);
+  }, [register, getValues]);
 
   useEffect(() => {
     if (selectedEvent) {
@@ -105,6 +100,7 @@ const EventModal: React.FC<EventModalProps> = ({ onClose, onSave }) => {
       });
     }
   }, [selectedEvent, reset]);
+  console.log("dsakpof");
 
   if (!isModalOpen) return null;
 
@@ -181,16 +177,40 @@ const EventModal: React.FC<EventModalProps> = ({ onClose, onSave }) => {
             startDate={startDate || null}
             endDate={endDate || null}
             disabled={isReadOnly}
-            onStartChange={(date) =>
-              setValue("startDateTime", date ? dayjs(date).toISOString() : "", {
-                shouldValidate: true,
-              })
-            }
-            onEndChange={(date) =>
-              setValue("endDateTime", date ? dayjs(date).toISOString() : "", {
-                shouldValidate: true,
-              })
-            }
+            onStartChange={(date) => {
+              const newStart = date ? dayjs(date) : null;
+
+              setValue(
+                "startDateTime",
+                newStart ? newStart.format("YYYY-MM-DDTHH:mm:ss") : "",
+                { shouldValidate: true },
+              );
+
+              if (newStart) {
+                const currentEnd = endDate ? dayjs(endDate) : null;
+
+                if (!currentEnd || !currentEnd.isAfter(newStart)) {
+                  setValue(
+                    "endDateTime",
+                    newStart.add(30, "minute").format("YYYY-MM-DDTHH:mm:ss"),
+                    { shouldValidate: true },
+                  );
+                }
+              }
+
+              // 🔥 IMPORTANT
+              trigger(["startDateTime", "endDateTime"]);
+            }}
+            onEndChange={(date) => {
+              setValue(
+                "endDateTime",
+                date ? dayjs(date).format("YYYY-MM-DDTHH:mm:ss") : "",
+                { shouldValidate: true },
+              );
+
+              // 🔥 IMPORTANT
+              trigger(["startDateTime", "endDateTime"]);
+            }}
             startError={errors.startDateTime?.message as string}
             endError={errors.endDateTime?.message as string}
           />
